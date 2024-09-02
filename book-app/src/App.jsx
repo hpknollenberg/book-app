@@ -19,7 +19,7 @@ function App() {
         {books && books.map(book => {
           return (
             <div key={book.id}>
-              <p><strong>{book.volumeInfo.title}</strong> by {book.volumeInfo.authors}</p>
+              <p><strong>{book.volumeInfo.title}</strong> by {book.volumeInfo.authors && (book.volumeInfo.authors.length === 1 ? book.volumeInfo.authors : book.volumeInfo.authors.map((author, i) => {return i < book.volumeInfo.authors.length - 1 ? author + " and " : author}))}</p>
             </div>
           )
         })}
@@ -33,7 +33,7 @@ function App() {
     return (
       <div>
         <input value={typedTerm} onChange={e => setTypedTerm(e.target.value)}/>
-        <button onClick={e => setSearchTerm(typedTerm)}>Search</button>
+        <button onClick={() => setSearchTerm(typedTerm)}>Search</button>
       </div>
     )
   }
