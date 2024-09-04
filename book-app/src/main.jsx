@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import {
   createBrowserRouter,
@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import App from './App.jsx'
 import Login from './Login.jsx'
+import Protected from './protectedroute.jsx'
 
 import { AuthContext } from './authContext.js'
 import { useState } from 'react'
@@ -32,20 +33,32 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: '/',
-        element: <App />
-      },
-      {
         path: '/login',
         element: <Login />
-      }
+      },
+      {
+        element: <Protected />,
+        children: [
+          {
+            path: '/',
+            element: <App />
+          },
+        ]
+      }  
     ]
   }
 ])
 
 
 const AuthContextProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(undefined)
+  let tempToken = JSON.parse(localStorage.getItem('token'))
+
+  const [accessToken, setAccessToken] = useState(tempToken ? tempToken : [])
+
+
+  useEffect(() => {
+    localStorage.setItem("token", JSON.stringify(accessToken))
+  }, [accessToken])
 
   const auth = {
     accessToken,
