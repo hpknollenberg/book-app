@@ -6,18 +6,17 @@ import { fetchUser } from "./api"
 function App() {
   const { auth } = useContext(AuthContext)
 
-  const [searchTerm, setSearchTerm] = useState("Blood Meridian")
   const [books, setBooks] = useState([])
   const [authors, setAuthors] = useState([])
   const [title, setTitle] = useState("")
 
-  useEffect(() => {
+  const search = (searchTerm) => {
     axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`)
     .then((response) => {
       console.log(response.data.items)
       setBooks(response.data.items)
     })
-  }, [searchTerm])
+  }
 
   const Books = () => {
 
@@ -31,7 +30,9 @@ function App() {
         {books && books.map(book => {
           return (
             <div key={book.id}>
-              <p> <button className="m-1" onClick={() => addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors)}>Add</button> 
+              <p style={{borderStyle: "dashed"}}> 
+              <img src={book.volumeInfo.imageLinks.smallThumbnail} />
+              <button className="m-1" onClick={() => addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors)}>Add</button> 
               <strong>{book.volumeInfo.title} </strong> 
               by {book.volumeInfo.authors && (book.volumeInfo.authors.length === 1 ? book.volumeInfo.authors : book.volumeInfo.authors.map((author, i) => {return i < book.volumeInfo.authors.length - 1 ? author + " and " : author}))}
               </p>
@@ -58,9 +59,9 @@ function App() {
     const [typedTerm, setTypedTerm] = useState("")
 
     return (
-      <div>
+      <div className="p-2">
         <input value={typedTerm} onChange={e => setTypedTerm(e.target.value)}/>
-        <button onClick={() => setSearchTerm(typedTerm)}>Search</button>
+        <button onClick={() => search(typedTerm)}>Search</button>
       </div>
     )
   }
@@ -70,13 +71,25 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Book App</h1>
-      <SearchBox />
-      <Books />
-      <Bookshelf />
-      <div>
-        <button onClick={() => submit()}>Fetch Profile</button>
+    <div className="d-flex flex-wrap justify-content-center">
+      <div className="col-lg-6 col-11 p-5">
+        <div className="d-flex justify-content-center">
+          <h1>⬇️SEARCH HERE⬇️</h1>
+        </div>
+        <div className="d-flex justify-content-center">
+          <SearchBox />
+        </div>
+        <div style={{borderStyle: "solid"}}>
+          <Books />
+        </div>
+        
+      </div>
+      <div className="col-lg-6 col-11 p-5">
+        <h1>⬇️BOOKSHELF⬇️</h1>
+        <Bookshelf />
+          <div>
+            <button onClick={() => submit()}>Fetch Profile</button>
+          </div>
       </div>
     </div>
   )
