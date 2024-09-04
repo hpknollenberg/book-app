@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
+import { AuthContext } from "./authContext"
+import { fetchUser } from "./api"
 
 function App() {
+  const { auth } = useContext(AuthContext)
+
   const [searchTerm, setSearchTerm] = useState("Blood Meridian")
   const [books, setBooks] = useState([])
   const [authors, setAuthors] = useState([])
@@ -61,12 +65,19 @@ function App() {
     )
   }
 
+  const submit = () => {
+    fetchUser({ auth })
+  }
+
   return (
     <div>
       <h1>Book App</h1>
       <SearchBox />
       <Books />
       <Bookshelf />
+      <div>
+        <button onClick={() => submit()}>Fetch Profile</button>
+      </div>
     </div>
   )
 }
