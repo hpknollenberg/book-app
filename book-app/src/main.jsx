@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App.jsx'
 import Login from './Login.jsx'
 import Protected from './protectedroute.jsx'
+import Header from './Header.jsx'
 
 import { AuthContext } from './authContext.js'
 import { useState } from 'react'
@@ -20,6 +21,7 @@ import { useState } from 'react'
 function Layout() {
   return (
     <>
+      <Header />
         <div id='page-content'>
           <Outlet />
         </div>

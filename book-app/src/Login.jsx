@@ -1,11 +1,13 @@
 import { useContext, useState } from "react"
 import { AuthContext } from "./authContext"
 import { createUser, getToken } from "./api"
+import { useNavigate } from "react-router-dom"
 
 function Login() {
     const { auth } = useContext(AuthContext)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const navigate = useNavigate()
 
 
     const CreateNewUser = () => {
@@ -16,6 +18,8 @@ function Login() {
 
         const submitNewUser = () => {
             createUser({ newUsername, newPassword, firstName, lastName})
+            .then(() => getToken({ auth, username, password }))
+            .then(() => navigate("/"))
         } 
 
         return (
@@ -54,7 +58,7 @@ function Login() {
                 </div>
 
                 <div style={{ marginTop: 20 }}>
-                    <button onClick={() => submit()}>Submit</button>
+                    <button onClick={() => submitNewUser()}>Submit</button>
                 </div>
             </div>
 
@@ -63,6 +67,7 @@ function Login() {
 
     const submitLogin = () => {
         getToken({ auth, username, password })
+        .then(() => navigate("/"))
     }
 
     return (
