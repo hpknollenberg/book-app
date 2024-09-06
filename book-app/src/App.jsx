@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { AuthContext, UserContext } from "./authContext"
-import { createBook, fetchUser } from "./api"
+import { createBook, fetchUser, getBooks } from "./api"
 
 function App() {
   const { auth } = useContext(AuthContext)
@@ -9,9 +9,7 @@ function App() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [books, setBooks] = useState([])
-  const [authors, setAuthors] = useState([])
-  const [title, setTitle] = useState("")
-  const [imageLink, setImageLink] = useState("")
+  const [bookshelf, setBookshelf] = useState([])
 
   useEffect(() => {
     fetchUser({ auth })
@@ -22,6 +20,12 @@ function App() {
     })
   }, [auth.accessToken])
 
+  useEffect(() => {
+    getBooks({ auth, user })
+    .then((response) => {
+      setBookshelf(response.data)
+    })
+  }, [user])
 
   const search = (searchTerm) => {
     axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchTerm}`)
@@ -43,7 +47,7 @@ function App() {
           return (
             <div key={book.id}>
               <p style={{borderStyle: "dashed"}}> 
-              <img src={book.volumeInfo.imageLinks.smallThumbnail} />
+              <img src={book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.smallThumbnail : ""} />
               <button className="m-1" onClick={() => addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors, book.volumeInfo.imageLinks.smallThumbnail)}>Add</button> 
               <strong>{book.volumeInfo.title} </strong> 
               by {book.volumeInfo.authors && (book.volumeInfo.authors.length === 1 ? book.volumeInfo.authors : book.volumeInfo.authors.map((author, i) => {return i < book.volumeInfo.authors.length - 1 ? author + " and " : author}))}
@@ -59,12 +63,14 @@ function App() {
 
   const Bookshelf = () => {
     return (
-      <div>
-        <p>
-        <img src={imageLink} />
-        <strong>{title} </strong> 
-        by {authors && (authors.length === 1 ? authors : authors.map((author, i) => {return i < authors.length - 1 ? author + " and " : author}))}
-        </p>
+      <div className="d-flex flex-wrap">
+        {bookshelf && bookshelf.map(book => {
+          return(
+            <div key={book.id}>
+              <img src={book.image_link} />
+            </div>
+          ) 
+        })}
       </div>
     )
   }
