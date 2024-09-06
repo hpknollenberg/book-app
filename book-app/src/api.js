@@ -3,6 +3,23 @@ import axios from 'axios'
 const baseUrl = "http://127.0.0.1:8000"
 
 
+export const createBook = ({ auth }, user, authors, title, imageLink) => {
+    return axios({
+        method: 'post',
+        url: `${baseUrl}/create-book/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            user: user,
+            authors: authors,
+            title: title,
+            image_link: imageLink
+        }
+    })
+}
+
+
 export const createUser = ({ newUsername, newPassword, firstName, lastName }) => {
     return axios({
         method: 'post',
@@ -31,6 +48,7 @@ export const fetchUser = ({ auth }) => {
         }
     }).then(response => {
         console.log('PROFILE: ', response)
+        return response
     })
     .catch(error => {
         console.log('ERROR: ', error)
