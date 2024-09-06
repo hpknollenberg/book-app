@@ -12,14 +12,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App.jsx'
 import Login from './Login.jsx'
 import Protected from './protectedroute.jsx'
+import Header from './Header.jsx'
 
-import { AuthContext } from './authContext.js'
+import { AuthContext, UserContext } from './authContext.js'
 import { useState } from 'react'
 
 
 function Layout() {
   return (
     <>
+      <Header />
         <div id='page-content'>
           <Outlet />
         </div>
@@ -73,8 +75,28 @@ const AuthContextProvider = ({ children }) => {
 }
 
 
+const UserContextProvider = ({children}) => {
+  let tempUser = JSON.parse(localStorage.getItem('user'))
+    
+    const [user, setUser] = useState(tempUser ? tempUser : 0)
+  
+    useEffect(() => {
+      localStorage.setItem("user", JSON.stringify(user))
+    }, [user])
+  
+  
+    return(
+      <UserContext.Provider value={{ user, setUser }} >
+        {children}
+      </UserContext.Provider>
+    )
+}
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <AuthContextProvider>
-    <RouterProvider router={router} />
-  </AuthContextProvider>
+  <UserContextProvider>
+    <AuthContextProvider>
+      <RouterProvider router={router} />
+    </AuthContextProvider>
+  </UserContextProvider>
 )
