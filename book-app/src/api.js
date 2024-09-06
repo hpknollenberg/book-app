@@ -56,6 +56,24 @@ export const fetchUser = ({ auth }) => {
 }
 
 
+export const getBooks = ({ auth, user }) => {
+    console.log("USER: ", user)
+    return axios({
+        method: 'post',
+        url: `${baseUrl}/get-books/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            user: user
+        }
+    }).then(response => {
+        console.log(response.data)
+        return response
+    })
+}
+
+
 export const getToken = ({ auth, username, password }) => {
     return axios.post(`${baseUrl}/token/`, {
         username: username,
