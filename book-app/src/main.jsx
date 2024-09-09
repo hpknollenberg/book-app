@@ -13,6 +13,7 @@ import App from './App.jsx'
 import Login from './Login.jsx'
 import Protected from './protectedroute.jsx'
 import Header from './Header.jsx'
+import Bookshelf from './Bookshelf.jsx'
 
 import { AuthContext, UserContext } from './authContext.js'
 import { useState } from 'react'
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
             path: '/',
             element: <App />
           },
+          {
+            path: '/bookshelf',
+            element: <Bookshelf />
+          }
         ]
       }  
     ]
