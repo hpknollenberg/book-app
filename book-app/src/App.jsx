@@ -3,6 +3,8 @@ import axios from 'axios'
 import { AuthContext, UserContext } from "./authContext"
 import { createBook, fetchUser, getBooks } from "./api"
 import Tabs from './Tabs'
+import { Button, Modal } from 'react-bootstrap'
+import TextField from '@mui/material/TextField'
 
 function App() {
   const { auth } = useContext(AuthContext)
@@ -49,19 +51,43 @@ function App() {
         {books && books.map(book => {
           const [show, setShow] = useState(false)
 
+          const handleClose = () => setShow(false)
+          const handleShow = () => setShow(true)
+
           return (
-            <div key={book.id} style={{borderStyle: "dashed", height: "200px"}} className="d-flex">
-              <p className="p-2"> 
-              <img src={book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.smallThumbnail : ""} style={{height: "100%",objectFit: "contain"}} />
-              {!show ? <button className="m-1" onClick={() => setShow(!show)}>Options</button> : <button className="m-1" onClick={() => setShow(!show)}>Close Options</button>}
-              <strong className="m-1">{book.volumeInfo.title} </strong> 
-              by {book.volumeInfo.authors && (book.volumeInfo.authors.length === 1 ? book.volumeInfo.authors : book.volumeInfo.authors.map((author, i) => {return i < book.volumeInfo.authors.length - 1 ? author + " and " : author}))}
+            <div key={book.id} style={{borderStyle: "dashed", width: '100%'}} className="d-flex justify-content-between align-items-between">
+              <p className="d-flex align-items-center col-8"> 
+                <div className="d-flex flex-wrap align-items-center m-1" style={{borderRight: 'solid'}}>
+                  <img src={book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : ""} style={{width: '100%', height:'100%', objectFit: "fit-content"}} />
+                </div>
+                <div className="m-1 col-6">
+                  <strong>{book.volumeInfo.title} </strong> 
+                  <p>by {book.volumeInfo.authors && (book.volumeInfo.authors.length === 1 ? book.volumeInfo.authors : book.volumeInfo.authors.map((author, i) => {return i < book.volumeInfo.authors.length - 1 ? author + " and " : author}))}</p>
+                </div>
               </p>
-              {show && 
-              <div>
-                <button className="m-1" onClick={() => addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors, book.volumeInfo.imageLinks.smallThumbnail)}>Add to Bookshelf</button>
-              </div>}
-              
+              <div className='m-1 d-flex flex-column justify-content-start align-items-end col-4'>
+                <Button variant="dark" className="me-2" onClick={() => addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors, book.volumeInfo.imageLinks.thumbnail)}>Add to Bookshelf</Button>
+                <Button variant="secondary" className="m-2" onClick={handleShow}>
+                  Review Book
+                </Button>
+
+                <Modal show={show} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Add a review for {book.volumeInfo.title}:</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <TextField multiline="true" style={{width: '100%'}}></TextField>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Close
+                    </Button>
+                    <Button variant="dark" onClick={handleClose}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </div>
             </div>
           )
         })}
@@ -69,20 +95,6 @@ function App() {
     )
   }
 
-
-  const Bookshelf = () => {
-    return (
-      <div className="d-flex flex-wrap">
-        {bookshelf && bookshelf.map(book => {
-          return(
-            <div key={book.id}>
-              <img src={book.image_link} />
-            </div>
-          ) 
-        })}
-      </div>
-    )
-  }
 
 
   
@@ -100,29 +112,20 @@ function App() {
   return (
     <div>
       <Tabs activeTab="search"/>
-      <div className="d-flex flex-wrap justify-content-center">
-        <div className="col-lg-6 col-12 p-5">
+        <div className="p-5 d-flex flex-column justify-content-center align-items-center">
           <div className="d-flex justify-content-center">
             <h1>⬇️SEARCH HERE⬇️</h1>
           </div>
           <div className="d-flex justify-content-center">
             <SearchBox />
           </div>
-          <div style={{borderStyle: "solid"}}>
+          <div className='col-12 col-sm-6' style={{borderStyle: "solid"}}>
             <Books />
           </div>
-          
         </div>
-        <div className="col-lg-6 col-12 p-5">
-          <div className="d-flex justify-content-center">
-            <h1>⬇️BOOKSHELF⬇️</h1>
-          </div>
-          <div className="d-flex justify-content-center">
-            <Bookshelf />
-          </div>
-        </div>
+
+        
       </div>
-    </div>
   )
 }
 
