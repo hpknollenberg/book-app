@@ -8,6 +8,7 @@ import {
 
 //project styles
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './app.css'
 
 import App from './App.jsx'
 import Login from './Login.jsx'
