@@ -4,6 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Outlet,
+  useParams,
 } from 'react-router-dom'
 
 //project styles
@@ -15,6 +16,7 @@ import Login from './Login.jsx'
 import Protected from './protectedroute.jsx'
 import Header from './Header.jsx'
 import Bookshelf from './Bookshelf.jsx'
+import OtherProfile from './OtherProfile.jsx'
 
 import { AuthContext, UserContext } from './authContext.js'
 import { useState } from 'react'
@@ -50,6 +52,10 @@ const router = createBrowserRouter([
           {
             path: '/bookshelf',
             element: <Bookshelf />
+          },
+          {
+            path: '/user/:username',
+            element: <OtherProfile />
           }
         ]
       }  

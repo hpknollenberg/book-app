@@ -74,6 +74,40 @@ export const getBooks = ({ auth, user }) => {
 }
 
 
+export const getOtherBooks = ({ auth, username }) => {
+    return axios({
+        method: 'post',
+        url: `${baseUrl}/get-other-books/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            username: username
+        }
+    }).then(response => {
+        console.log(response.data)
+        return response
+    })
+}
+
+
+export const getOtherProfile = ({ auth, username}) => {
+    return axios({
+        method: 'post',
+        url: `${baseUrl}/get-other-profile/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            username: username
+        }
+    }).then(response => {
+        console.log(response.data)
+        return response
+    })
+}
+
+
 export const getToken = ({ auth, username, password }) => {
     return axios.post(`${baseUrl}/token/`, {
         username: username,
