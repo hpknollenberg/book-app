@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { AuthContext, UserContext } from "./authContext"
-import { createBook, fetchUser, getBooks } from "./api"
+import { createBook, createReview, fetchUser, getBooks } from "./api"
 import Tabs from './Tabs'
 import { Button, Modal } from 'react-bootstrap'
 import TextField from '@mui/material/TextField'
@@ -11,6 +11,7 @@ function App() {
   const { user, setUser } = useContext(UserContext)
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
+  const [reviewBook, setReviewBook] = useState("")
   const [books, setBooks] = useState([])
   const [bookshelf, setBookshelf] = useState([])
 
@@ -43,6 +44,9 @@ function App() {
 
     const addToBookshelf = (bookTitle, bookAuthors, bookImage) => {
       createBook({auth}, user, bookAuthors, bookTitle, bookImage)
+      .then(response => {
+        setReviewBook(response.data.id)
+      })
     }
 
 
@@ -50,9 +54,15 @@ function App() {
       <div>
         {books && books.map(book => {
           const [show, setShow] = useState(false)
+          const [review, setReview] = useState("")
 
           const handleClose = () => setShow(false)
           const handleShow = () => setShow(true)
+
+          const submitReview = () => {
+              createReview({auth, user, reviewBook, review})
+              .then(() => handleClose())
+          }
 
           return (
             <div key={book.id} style={{borderStyle: "dashed", width: '100%'}} className="d-flex justify-content-between align-items-between">
@@ -76,14 +86,16 @@ function App() {
                     <Modal.Title>Add a review for {book.volumeInfo.title}:</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <TextField multiline="true" style={{width: '100%'}}></TextField>
+                    <TextField multiline="true" style={{width: '100%'}} value={review} onChange={(e) => setReview(e.target.value)}></TextField>
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                       Close
                     </Button>
-                    <Button variant="dark" onClick={handleClose}>
-                      Save Changes
+                    <Button variant="dark" onClick={() => {
+                            addToBookshelf(book.volumeInfo.title, book.volumeInfo.authors, book.volumeInfo.imageLinks.thumbnail)
+                            submitReview()}}
+                      >Save Changes
                     </Button>
                   </Modal.Footer>
                 </Modal>

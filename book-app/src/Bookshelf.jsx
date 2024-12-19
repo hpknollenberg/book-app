@@ -18,7 +18,7 @@ function Bookshelf() {
     return (
         <div>
             <Tabs activeTab="bookshelf" />
-            <div className="d-flex flex-wrap">
+            <div className="d-flex flex-wrap p-2">
                 {bookshelf && bookshelf.map(book => {
                     return(
                         <div key={book.id}>

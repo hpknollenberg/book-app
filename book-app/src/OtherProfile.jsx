@@ -27,7 +27,7 @@ function OtherProfile() {
     }, [])
 
     return (
-        <div>
+        <div className="p-2">
             <h1>{username}</h1>
             <h5>{firstName} {lastName}</h5>
             <hr></hr>

@@ -20,6 +20,22 @@ export const createBook = ({ auth }, user, authors, title, imageLink) => {
 }
 
 
+export const createReview = ({auth, user, reviewBook, review}) => {
+    return axios({
+        method: 'post',
+        url: `${baseUrl}/create-review/`,
+        headers: {
+            Authorization: `Bearer ${auth.accessToken}`
+        },
+        data: {
+            user: user,
+            book: reviewBook,
+            content: review
+        }
+    })
+}
+
+
 export const createUser = ({ newUsername, newPassword, firstName, lastName }) => {
     return axios({
         method: 'post',
